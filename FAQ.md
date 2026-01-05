@@ -1,7 +1,9 @@
 # FAQ
 
 This document answers common questions about HexPylot.
-The goal is to be transparent about both its strengths and its limitations.
+
+The goal is to be transparent about what HexPylot can do,
+what it cannot do, and why those limits exist.
 
 HexPylot is a personal learning and exploration project.
 It is not a production-ready framework and is not presented as one.
@@ -39,13 +41,13 @@ Examples include:
 HexPylot is **not suitable for memory-bandwidth-bound workloads**, such as:
 - simple stencil updates
 - light array operations
-- workloads dominated by memory reads/writes
+- workloads dominated by memory reads and writes
 
 In these cases, adding more CPU cores will not result in meaningful speedup.
 
 ---
 
-## 4. Why doesn’t memory-bound workload scale with more CPU cores?
+## 4. Why don’t memory-bound workloads scale with more CPU cores?
 
 Because the hardware memory bandwidth becomes saturated.
 
@@ -66,17 +68,43 @@ This is expected behavior on modern CPUs.
 
 ---
 
-## 6. Why does compute-bound workload scale much better?
+## 6. Why do compute-bound workloads scale much better?
 
 Compute-bound workloads:
 - spend more time executing arithmetic instructions
 - rely less on memory bandwidth
 
-This allows multiple CPU cores to work in parallel more effectively, resulting in near-linear speedup until other limits are reached.
+This allows multiple CPU cores to work in parallel more effectively,
+resulting in near-linear speedup until other limits are reached.
 
 ---
 
-## 7. Is this just Numba being fast?
+## 7. What does the single-core (n=1) result represent?
+
+The single-core result is obtained by running **the exact same engine** with `n=1`.
+
+There is:
+- no separate single-core implementation
+- no special fast path
+- no different codebase for baseline comparison
+
+This ensures that all scaling results are measured against the same architecture,
+only varying the number of worker processes.
+
+---
+
+## 8. Why not provide a separate “pure single-core” baseline?
+
+HexPylot is designed to study **scaling behavior**, not to compete with highly optimized single-thread libraries.
+
+Using a separate single-core implementation would introduce additional variables
+and make the comparison less meaningful.
+
+The goal is to observe how the same system behaves as concurrency increases.
+
+---
+
+## 9. Is this just Numba being fast?
 
 Numba is an important part of the system, but it is **not the whole story**.
 
@@ -85,11 +113,11 @@ HexPylot also relies on:
 - phase-based execution instead of fine-grained locking
 - explicit synchronization control
 
-Without these, Numba alone would not achieve the same scaling behavior.
+Without these architectural choices, Numba alone would not achieve the same behavior.
 
 ---
 
-## 8. How is this different from standard multiprocessing?
+## 10. How is this different from standard multiprocessing?
 
 Standard multiprocessing typically involves:
 - pickling data
@@ -103,7 +131,7 @@ HexPylot instead:
 
 ---
 
-## 9. Does HexPylot bypass the Python GIL?
+## 11. Does HexPylot bypass the Python GIL?
 
 HexPylot does not “remove” the GIL globally.
 
@@ -116,27 +144,30 @@ This allows effective parallelism for numeric workloads.
 
 ---
 
-## 10. Why use a hexagonal grid in the benchmark?
+## 12. Why use a hexagonal grid in the benchmark?
 
 Hexagonal grids:
 - require more neighbor accesses than square grids
 - have less regular memory access patterns
 
 They are intentionally used as a **stress test**, not because they are faster.
-If the architecture performs well here, it should perform at least as well on simpler layouts.
+
+If the architecture performs well here,
+it should perform at least as well on simpler layouts.
 
 ---
 
-## 11. Isn’t hex topology more expensive than grid topology?
+## 13. Isn’t hex topology more expensive than grid topology?
 
 Yes — and that is the point.
 
 Hex grids are computationally more expensive.
-Using them helps demonstrate that the performance gains come from architectural choices, not from choosing an easy benchmark.
+Using them helps demonstrate that performance gains come from architectural choices,
+not from choosing an easy benchmark.
 
 ---
 
-## 12. Is HexPylot production-ready?
+## 14. Is HexPylot production-ready?
 
 No.
 
@@ -151,7 +182,7 @@ It is not:
 
 ---
 
-## 13. Who is this project for?
+## 15. Who is this project for?
 
 HexPylot may be useful for:
 - learners interested in parallel computing
@@ -162,9 +193,10 @@ It is not intended to compete with established HPC frameworks.
 
 ---
 
-## 14. Why publish this project if it has limitations?
+## 16. Why publish this project if it has limitations?
 
-Because understanding *why* something does not scale is just as valuable as achieving speedup.
+Because understanding *why* something does not scale
+is just as valuable as achieving speedup.
 
 HexPylot documents:
 - where Python performs well
