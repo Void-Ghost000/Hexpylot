@@ -9,6 +9,9 @@ When the workload is memory-bandwidth-bound, this project honestly exposes the h
 HexPylot is a minimal parallel engine built around removing software overhead
 before touching hardware limits.
 
+Single-core results are obtained by running the exact same engine with `n=1`.
+No separate single-core implementation is used.
+
 ```text
 
 ## Architecture Overview
