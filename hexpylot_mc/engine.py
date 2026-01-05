@@ -1,9 +1,9 @@
 """  
 HexPylot Monte Carlo Engine  
-  
-Minimal Monte Carlo engine with QOIM-inspired audit trail.  
-Uses lock-free shared memory for zero-copy parallel execution.  
-  
+
+ Minimal Monte Carlo engine with an explicit audit trail.
+Uses lock-free shared memory for zero-copy parallel execution.
+
 Supports: "mean" and "sum" reducers.  
 Requires: kernel functions compatible with vectorized uniform inputs.  
 """  
